@@ -63,38 +63,45 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
-const galleryContainer = document.querySelector('.gallery', 'js-gallery');
-const picturesMarkUp = createGalleryMarkup(galleryItems)
-// const lightbox = document.querySelector('.lightbox')
-galleryContainer.insertAdjacentHTML("beforeend", picturesMarkUp);
-galleryContainer.addEventListener('click', onGalleryContainerClick)
-
-function createGalleryMarkup(galleryItems) {
-    return galleryItems.map(({ preview, original, description }) => {
-        return `
-    <li class="gallery__item">
-  <a
-    class="gallery__link"
-    href="${original}"
-  >
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
+const markup = galleryItems.map(({ preview, original, description }) => {
+  return `
+<li class="gallery__item">
+<a
+class="gallery__link"
+href="${original}"
+>
+<img
+class="gallery__image"
+src="${preview}"
+data-source="${original}"
+alt="${description}"
+/>
+</a>
 </li>
 `
-    }).join('');
-}
+})
+const galleryContainer = document.querySelector('.gallery');
+const lightbox = document.querySelector('.lightbox');
+const lightBoxImgRef = document.querySelector('.lightbox__image')
+const closeButton = document.querySelector('.lightbox__button')
+galleryContainer.insertAdjacentHTML("beforeend", markup.join(''));
+galleryContainer.addEventListener('click', onGalleryContainerClick)
+closeButton.addEventListener('click', onCloseButtonClick)
 
 function onGalleryContainerClick(evt) {
-    const isGalleryItemEl = evt.target.classList.contains('gallery__item')
-    if (!isGalleryItemEl) {
-        return;
+  evt.preventDefault()
+    if (evt.target.localName === 'img') {
+        lightbox.classList.add('is-open')
+        lightBoxImgRef.src = evt.target.dataset.source
     }
 }
-    
 
+function onCloseButtonClick(evt) {
+    evt.preventDefault()
+    if (evt.target.localName === 'button') {
+        lightbox.classList.remove('is-open')
+        lightBoxImgRef.src =("")
+        
+    }
+}
 
